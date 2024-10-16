@@ -1,10 +1,14 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 // Generate JWT Token
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "5m"});
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "5m" });
+};
+
+const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
 // Register new user
@@ -14,12 +18,32 @@ const registerUser = async (req, res) => {
     // Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-        return res.status(400).json({ message: 'Email already in use.' });
+        return res.status(400).json({ message: "Email already in use." });
     }
+
+    // Check if any param is empty
+    if (!username || !email || !password) {
+        let message = "";
+        if (!username) {
+            message = "Username is empty";
+        } else if (!email) {
+            message = "Email is empty";
+        } else {
+            message = "Password is empty";
+        }
+        return res.status(400).json({ message: message });
+    }
+
+    // Check valid email
+    if (!validateEmail(email)) {
+        return res.status(400).json({ message: "Invalid Email" });
+    }
+
+    console.log(username, password, email);
 
     // Create new user
     const newUser = await User.create({
-        name,
+        username,
         email,
         password,
     });
@@ -27,15 +51,14 @@ const registerUser = async (req, res) => {
     if (newUser) {
         res.status(201).jason({
             _id: newUser._id,
-            name: newUser.name,
+            username: newUser.username,
             email: newUser.email,
             token: generateToken(newUser._id),
         });
     } else {
-        res.status(400).json({ message: 'Invalid user data' });
+        res.status(400).json({ message: "Invalid user data" });
     }
 };
-
 
 // Login user
 const loginUser = async (req, res) => {
@@ -48,12 +71,12 @@ const loginUser = async (req, res) => {
     if (user && (await user.comparePassword(password))) {
         res.json({
             _id: user._id,
-            name: user.name,
+            username: user.username,
             email: user.email,
             token: generateToken(user._id),
         });
     } else {
-        res.status(401).json({ message: 'Invalid email or password' });
+        res.status(401).json({ message: "Invalid email or password" });
     }
 };
 
