@@ -1,2 +1,2 @@
-# recipe-sharing-app
+# RecipeBook
  Place to share recipes with
