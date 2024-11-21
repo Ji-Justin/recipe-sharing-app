@@ -1,24 +1,5 @@
 const Recipe = require("../models/Recipe");
 
-// Get all recipes
-const getRecipes = async (req, res) => {
-    const recipes = await Recipe.find().populate("createdBy", "name");
-    res.json(recipes);
-};
-
-// Get single recipe
-const getRecipeById = async (req, res) => {
-    const recipe = await Recipe.findById(req.params.id).populate(
-        "createdBy",
-        "name"
-    );
-    if (recipe) {
-        res.json(recipe);
-    } else {
-        res.state(404).json({ message: "Recipe not found" });
-    }
-};
-
 // Create recipe
 const createRecipe = async (req, res) => {
     const { title, ingredients, instructions, imageUrl } = req.body;
@@ -30,8 +11,29 @@ const createRecipe = async (req, res) => {
         createdBy: req.user._id,
     });
 
-    const createdRecipe = await recipe.save();
-    res.status(201).json(createdRecipe);
+    await recipe.save();
+    res.status(201).json(recipe);
+};
+
+// Get all recipes
+const getRecipes = async (req, res) => {
+    const recipes = await Recipe.find().populate("createdBy", "name");
+    res.json(recipes);
+};
+
+// Get single recipe
+const getRecipeById = async (req, res) => {
+    const recipe = await Recipe.findById(req.params.id)
+        .populate("createdBy", "username")
+        .populate({
+            path: "comments",
+            populate: { path: "author", select: "username" },
+        });
+    if (recipe) {
+        res.json(recipe);
+    } else {
+        res.state(404).json({ message: "Recipe not found" });
+    }
 };
 
 // Update recipe
@@ -45,8 +47,8 @@ const updateRecipe = async (req, res) => {
             recipe.instructions = instructions;
             recipe.imageUrl = imageUrl || recipe.imageUrl;
 
-            const updatedRecipe = await recipe.save();
-            res.json(updatedRecipe);
+            await recipe.save();
+            res.json(recipe);
         } else {
             res.status(401).json({ message: "Not authorized" });
         }
@@ -55,6 +57,7 @@ const updateRecipe = async (req, res) => {
     }
 };
 
+// Delete recipe
 const deleteRecipe = async (req, res) => {
     const recipe = await Recipe.findById(req.params.id);
 
@@ -67,9 +70,9 @@ const deleteRecipe = async (req, res) => {
 };
 
 module.exports = {
+    createRecipe,
     getRecipes,
     getRecipeById,
-    createRecipe,
     updateRecipe,
     deleteRecipe,
 };
