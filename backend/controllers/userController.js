@@ -1,6 +1,5 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -39,8 +38,6 @@ const registerUser = async (req, res) => {
         return res.status(400).json({ message: "Invalid Email" });
     }
 
-    console.log(username, password, email);
-
     // Create new user
     const newUser = await User.create({
         username,
@@ -49,7 +46,7 @@ const registerUser = async (req, res) => {
     });
 
     if (newUser) {
-        res.status(201).jason({
+        res.status(201).json({
             _id: newUser._id,
             username: newUser.username,
             email: newUser.email,
