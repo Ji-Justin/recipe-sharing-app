@@ -2,13 +2,14 @@ const Recipe = require("../models/Recipe");
 
 // Create recipe
 const createRecipe = async (req, res) => {
-    const { title, ingredients, instructions, imageUrl } = req.body;
+    const { title, description, ingredients, instructions, imageUrl } = req.body;
     const recipe = new Recipe({
         title,
+        description,
         ingredients,
         instructions,
         imageUrl,
-        createdBy: req.user._id,
+        author: req.user._id,
     });
 
     await recipe.save();
@@ -17,14 +18,14 @@ const createRecipe = async (req, res) => {
 
 // Get all recipes
 const getRecipes = async (req, res) => {
-    const recipes = await Recipe.find().populate("createdBy", "name");
+    const recipes = await Recipe.find().populate("author", "name");
     res.json(recipes);
 };
 
 // Get single recipe
 const getRecipeById = async (req, res) => {
     const recipe = await Recipe.findById(req.params.id)
-        .populate("createdBy", "username")
+        .populate("author", "username")
         .populate({
             path: "comments",
             populate: { path: "author", select: "username" },
@@ -38,11 +39,12 @@ const getRecipeById = async (req, res) => {
 
 // Update recipe
 const updateRecipe = async (req, res) => {
-    const { title, ingredients, instructions, imageUrl } = req.body;
+    const { title, description, ingredients, instructions, imageUrl } = req.body;
     const recipe = await Recipe.findById(req.params.id);
     if (recipe) {
         if (recipe.createdBy.toString() === req.user._id.toString()) {
             recipe.title = title;
+            recipe.description = description;
             recipe.ingredients = ingredients;
             recipe.instructions = instructions;
             recipe.imageUrl = imageUrl || recipe.imageUrl;
