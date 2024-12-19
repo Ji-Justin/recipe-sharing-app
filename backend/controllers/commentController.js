@@ -36,3 +36,8 @@ const deleteComment = async (req, res) => {
 
     res.json({ message: "Comment deleted" });
 };
+
+module.exports = {
+    addComment,
+    deleteComment,
+};
