@@ -21,6 +21,9 @@ const recipeSchema = new mongoose.Schema({
             required: true,
         },
     ],
+    category: {
+        type: String
+    },
     imageUrl: {
         type: String,
     },

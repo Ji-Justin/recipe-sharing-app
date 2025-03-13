@@ -1,19 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
-
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Header from './components/Header';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 
+import Navbar from './components/Navbar';
+import Home from './pages/HomePage';
+import Login from './pages/LoginPage';
+import Register from './pages/RegisterPage';
+import Profile from './pages/ProfilePage';
+import CreateRecipe from './pages/CreateRecipePage';
+import RecipeDetail from './pages/RecipeDetailPage';
 
 function App() {
   return (
     <Router>
-      <Header />
+      <Navbar />
       <Routes>
-        <Route path="/login" element={<LoginPage/>} />
-        <Route path="/register" element={<RegisterPage/>} />
+        <Route path="/" element={<Home/>} />
+        <Route path="/login" element={<Login/>} />
+        <Route path="/register" element={<Register/>} />
+        <Route path="/create" element={<CreateRecipe/>} />
+        <Route path="/recipe/:id" element={<RecipeDetail/>} />
+        <Route path="/profile" element={<Profile/>} />
       </Routes>
     </Router>
   );

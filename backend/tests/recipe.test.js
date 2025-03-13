@@ -3,7 +3,6 @@ const request = require("supertest");
 const app = require("../app");
 const User = require("../models/User");
 const Recipe = require("../models/Recipe");
-const { default: mongoose } = require("mongoose");
 
 describe("Recipe Routes", () => {
     let token;

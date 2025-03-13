@@ -9,6 +9,7 @@ const createRecipe = async (req, res) => {
         ingredients,
         instructions,
         imageUrl,
+        category,
         author: req.user._id,
     });
 
@@ -48,6 +49,7 @@ const updateRecipe = async (req, res) => {
             recipe.ingredients = ingredients;
             recipe.instructions = instructions;
             recipe.imageUrl = imageUrl || recipe.imageUrl;
+            recipe.category = category || recipe.category;
 
             await recipe.save();
             res.json(recipe);
