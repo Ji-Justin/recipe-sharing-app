@@ -7,7 +7,20 @@ const ProfilePage = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const { data } = await api.get("/users/profile");
+                setUser(data);
+            } catch (err) {
+                navigate("/login");
+            } finally {
+                setLoading(false);
+            }
+        };
+    }, [navigate]);
+
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div>
@@ -22,3 +35,5 @@ const ProfilePage = () => {
         </div>
     );
 };
+
+export default ProfilePage;
