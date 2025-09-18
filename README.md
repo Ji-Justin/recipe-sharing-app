@@ -19,7 +19,7 @@ A full-stack recipe sharing web application built with the MERN stack (MongoDB, 
 - React
 - Axios
 - React Router DOM
-- Tailwind CSS (optional for styling)
+- Tailwind CSS
 
 **Backend:**
 - Node.js
